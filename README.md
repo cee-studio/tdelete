@@ -1,4 +1,4 @@
-## How to test the returning a dangling address bug in tdelete ?
+## How to test tdelete's returning a dangling address bug ?
 
 1. make test_glib_c
 

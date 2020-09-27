@@ -33,10 +33,10 @@ int main(void)
        sprintf(ptr, "%d", i);
        TSEARCH (ptr, &root, compare);
    }
-   for (i = 0; i < 5; i++) {
+   for (i = 0; i < 4; i++) {
        ptr = strings[i];
        ret = TDELETE (ptr, &root, compare);
-       printf ("tdelete returns %p\n", ret);
+       fprintf (stderr, "  tdelete returns \e[0;37m%p\e[0m\n", ret);
    }
    return 0;
 }

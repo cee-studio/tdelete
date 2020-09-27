@@ -1,23 +1,29 @@
-all:
+all: test_glibc test_musl_libc
 
 liba.so: liba.c
-	gcc -c -fPIC $<
-	gcc -o $@ -shared liba.o
+	@$(CC) -c -fPIC $<
+	@$(CC) -o $@ -shared liba.o
 
-glibc: prog.c
-	gcc -o $@ $<
+glibc: main.c
+	@$(CC) -o $@ $<
 
 
 test_glibc: glibc liba.so
-	LD_PRELOAD=$(shell pwd)/liba.so  ./glibc
+	$(info  )
+	$(info  Testing glibc's implementation of tdelete for a returning dangling address bug)
+	$(info  )
+	@env LD_PRELOAD=$(shell pwd)/liba.so  ./glibc
 
 
-musl_libc: prog.c
-	gcc -o $@ -D__MUSLC__ prog.c tdelete.c tsearch.c
+musl_libc: main.c
+	@$(CC) -o $@ -D__MUSLC__ main.c tdelete.c tsearch.c
 
 
 test_musl_libc: musl_libc liba.so
-	LD_PRELOAD=$(shell pwd)/liba.so ./musl_libc
+	$(info  )
+	$(info  Testing musl libc's implementation of tdelete for a returning dangling address bug)
+	$(info  )
+	@env LD_PRELOAD=$(shell pwd)/liba.so ./musl_libc
 
 
 clean:
