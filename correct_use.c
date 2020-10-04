@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <string.h>
 
@@ -6,37 +7,28 @@
  * return value of tdelete is a dangling pointer
  *
  */
-static void *root = NULL;
 
-static int
-compare(const void *pa, const void *pb)
-{
-   char * sa = (char *) pa;
-   char * sb = (char *) pb;
-   return strcmp (sa, sb);
-}
-
+typedef int (*cmp)(const void *, const void *);
 static char  strings[8][64] = { 0 };
 
 int main(void)
 {
    int i;
    char * ptr;
-   void *  ret;
-   void * root_before_tdelete;
+   void * root = NULL, * root_before_tdelete, * ret;
 
    // prepare the data
    for (i = 0; i < 4; i++) {
        ptr = strings[i];
        sprintf(ptr, "%d", i);
-       tsearch (ptr, &root, compare);
+       tsearch (ptr, &root, (cmp)strcmp);
    }
 
    // need to preseve the root before its adjustment
    root_before_tdelete = root; 
    for (i = 0; i < 4; i++) {
        ptr = strings[i];
-       ret = tdelete (ptr, &root, compare);
+       ret = tdelete (ptr, &root, (cmp)strcmp);
 
        // as root might have been adjusted, only root_before_delete 
        // can be used to compare with ret.
