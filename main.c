@@ -35,8 +35,10 @@ int main(void)
    }
    for (i = 0; i < 4; i++) {
        ptr = strings[i];
+       fprintf (stderr, "\n  call tdelete to delete %s \n", ptr);
        ret = TDELETE (ptr, &root, compare);
        fprintf (stderr, "  tdelete returns \e[0;37m%p\e[0m\n", ret);
+       fprintf (stderr, "  root is %p\n", root);       
    }
    return 0;
 }

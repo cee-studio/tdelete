@@ -10,7 +10,7 @@ glibc: main.c
 
 test_glibc: glibc liba.so
 	$(info  )
-	$(info  Testing glibc's implementation of tdelete for a returning dangling address bug)
+	$(info  Testing glibc's tdelete)
 	$(info  )
 	@env LD_PRELOAD=$(shell pwd)/liba.so  ./glibc
 
@@ -21,7 +21,7 @@ musl_libc: main.c
 
 test_musl_libc: musl_libc liba.so
 	$(info  )
-	$(info  Testing musl libc's implementation of tdelete for a returning dangling address bug)
+	$(info  Testing musl libc's tdelete)
 	$(info  )
 	@env LD_PRELOAD=$(shell pwd)/liba.so ./musl_libc
 
