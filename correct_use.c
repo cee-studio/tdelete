@@ -1,15 +1,11 @@
 #include <stdio.h>
 #include <string.h>
-#ifndef __MUSLC__
-#include <search.h>
-#define TSEARCH  tsearch
-#define TDELETE  tdelete
-#else
-#include "tsearch.h"
-#define TSEARCH  xtsearch
-#define TDELETE  xtdelete
-#endif
 
+/*
+ * a demo to show how to determin the
+ * return value of tdelete is a dangling pointer
+ *
+ */
 static void *root = NULL;
 
 static int
@@ -29,27 +25,24 @@ int main(void)
    void *  ret;
    void * root_before_tdelete;
 
+   // prepare the data
    for (i = 0; i < 4; i++) {
        ptr = strings[i];
        sprintf(ptr, "%d", i);
-       TSEARCH (ptr, &root, compare);
+       tsearch (ptr, &root, compare);
    }
-   
-   root_before_tdelete = root; // need to preseve the root before its adjustment
-   fprintf (stderr, "  root_before_tdelete is %p\n", root_before_tdelete);
+
+   // need to preseve the root before its adjustment
+   root_before_tdelete = root; 
    for (i = 0; i < 4; i++) {
        ptr = strings[i];
-       fprintf (stderr, "\n  call tdelete to delete %s \n", ptr);
-       ret = TDELETE (ptr, &root, compare);
+       ret = tdelete (ptr, &root, compare);
+
        // as root might have been adjusted, only root_before_delete 
        // can be used to compare with ret.
-       if (root_before_tdelete == ret && root != ret) {
-          fprintf (stderr, "  root_before_tdelete is %p\n", root_before_tdelete);
-          fprintf (stderr, "  root is %p\n", root_before_tdelete);
+       if (root_before_tdelete == ret && root != root_before_tdelete) 
 	      fprintf (stderr, "  a dangling pointer %p is returned\n", ret);
-       }
-       fprintf (stderr, "  tdelete returns \e[0;37m%p\e[0m\n", ret);
-       fprintf (stderr, "  root is %p\n", root);       
+       
        // need to preseve the current root for the next loop
        root_before_tdelete = root;
    }
